@@ -41,7 +41,25 @@
                         <label><input type="checkbox" name="employment_details[0][still_working]" value="1"> Still Working Here</label>
                     </div>
                 </div>
-                <button type="button" class="btn btn-secondary" onclick="addEmployment()">+ Add More</button>
+                <button type="button" class="btn btn-secondary" onclick="addEmployment()">+ Add More Employment Details</button>
+            </div>
+
+            <div class="form-group">
+                <label>Identification Details</label>
+                <div id="identification-section">
+                    <div class="identification-group mb-3">
+                        <select name="identifications[0][identification_type_id]" class="form-control mb-2">
+                            @foreach($identificationTypes as $type)
+                                <option value="{{ $type->identification_type_id }}">{{ $type->identification_type_value }}</option>
+                            @endforeach
+                        </select>
+
+                        <input type="text" name="identifications[0][identification_number]" placeholder="ID Number *" class="form-control mb-2">
+                        <input type="text" name="identifications[0][issuing_authority]" placeholder="Issuing Authority *" class="form-control mb-2">
+                        <input type="date" name="identifications[0][expiry_date]" class="form-control mb-2">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="addIdentification()">+ Add More Identifications</button>
             </div>
 
             <button type="submit" class="btn btn-success">Save</button>
@@ -63,6 +81,26 @@
         `;
             section.appendChild(newGroup);
             employmentIndex++;
+        }
+
+        let identificationIndex = 1;
+
+        function addIdentification() {
+            let section = document.getElementById('identification-section');
+            let newGroup = document.createElement('div');
+            newGroup.classList.add('identification-group', 'mb-3');
+            newGroup.innerHTML = `
+                <select name="identifications[${identificationIndex}][identification_type_id]" class="form-control mb-2">
+                    @foreach($identificationTypes as $type)
+                        <option value="{{ $type->identification_type_id }}">{{ $type->identification_type_value }}</option>
+                    @endforeach
+                        </select>
+                        <input type="text" name="identifications[${identificationIndex}][identification_number]" placeholder="ID Number *" class="form-control mb-2">
+                <input type="text" name="identifications[${identificationIndex}][issuing_authority]" placeholder="Issuing Authority *" class="form-control mb-2">
+                <input type="date" name="identifications[${identificationIndex}][expiry_date]" class="form-control mb-2">
+                `;
+            section.appendChild(newGroup);
+            identificationIndex++;
         }
     </script>
 

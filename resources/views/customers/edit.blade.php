@@ -6,7 +6,7 @@
         <h2>Edit Customer</h2>
         <a href="{{ route('customers.index') }}" class="btn btn-primary mb-3">Back to List</a>
 
-        <form action="{{ route('customers.update', $customer->id) }}" method="POST">
+        <form action="{{ route('customers.update', $customer->customer_id) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -52,7 +52,28 @@
                         </div>
                     @endforeach
                 </div>
-                <button type="button" class="btn btn-secondary" onclick="addEmployment()">+ Add More</button>
+                <button type="button" class="btn btn-secondary" onclick="addEmployment()">+ Add More Employment Details</button>
+            </div>
+
+            <div class="form-group">
+                <label>Identification Details</label>
+                <div id="identification-section">
+                    @foreach($customer->identifications as $identification_index => $identification)
+                        <div class="identification-group mb-3">
+                            <select name="identifications[{{ $identification_index }}][identification_type_id]" class="form-control mb-2">
+                                @foreach($identificationTypes as $type)
+                                    <option value="{{ $type->identification_type_id }}" {{ $identification->identification_type_id === $type->identification_type_id ? 'selected' : '' }}>{{ $type->identification_type_value }}</option>
+                                @endforeach
+                            </select>
+
+                            <input type="text" name="identifications[{{ $identification_index }}][identification_number]" value="{{ old()['identifications'][$identification_index]['identification_number'] ?? $identification['identification_number'] }}" placeholder="ID Number *" class="form-control mb-2">
+                            <input type="text" name="identifications[{{ $identification_index }}][issuing_authority]" value="{{ old()['identifications'][$identification_index]['issuing_authority'] ?? $identification['issuing_authority'] }}" placeholder="Issuing Authority *" class="form-control mb-2">
+                            <input type="date" name="identifications[{{ $identification_index }}][expiry_date]" value="{{ old()['identifications'][$identification_index]['expiry_date'] ?? $identification['expiry_date'] }}" class="form-control mb-2">
+
+                        </div>
+                    @endforeach
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="addIdentification()">+ Add More</button>
             </div>
 
             <button type="submit" class="btn btn-success">Update</button>
@@ -74,6 +95,26 @@
         `;
             section.appendChild(newGroup);
             employmentIndex++;
+        }
+
+        let identificationIndex = 1;
+
+        function addIdentification() {
+            let section = document.getElementById('identification-section');
+            let newGroup = document.createElement('div');
+            newGroup.classList.add('identification-group', 'mb-3');
+            newGroup.innerHTML = `
+                <select name="identifications[${identificationIndex}][identification_type_id]" class="form-control mb-2">
+                    @foreach($identificationTypes as $type)
+                <option value="{{ $type->identification_type_id }}">{{ $type->identification_type_value }}</option>
+                        @endforeach
+                </select>
+                <input type="text" name="identifications[${identificationIndex}][identification_number]" placeholder="ID Number *" class="form-control mb-2">
+                <input type="text" name="identifications[${identificationIndex}][issuing_authority]" placeholder="Issuing Authority *" class="form-control mb-2">
+                <input type="date" name="identifications[${identificationIndex}][expiry_date]" class="form-control mb-2">
+                `;
+            section.appendChild(newGroup);
+            identificationIndex++;
         }
     </script>
 

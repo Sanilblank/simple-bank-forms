@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
+use App\Models\CustomerIdentification;
+use App\Models\IdentificationTypeEnum;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class CustomerController extends Controller
@@ -30,7 +32,9 @@ class CustomerController extends Controller
     public function create(): View|RedirectResponse
     {
         try {
-            return view('customers.create');
+            $identificationTypes = IdentificationTypeEnum::all();
+
+            return view('customers.create', compact('identificationTypes'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -42,7 +46,8 @@ class CustomerController extends Controller
     public function store(CustomerRequest $request): RedirectResponse
     {
         try {
-            Customer::create([
+            DB::beginTransaction();
+            $customer = Customer::create([
                 'name' => $request->name,
                 'date_of_birth' => $request->date_of_birth,
                 'address' => $request->address,
@@ -52,8 +57,22 @@ class CustomerController extends Controller
                 'employment_details' => $request->employment_details ? array_values($request->employment_details) : null,
             ]);
 
+            foreach ($request->identifications as $identification) {
+                CustomerIdentification::create([
+                    'customer_id' => $customer->customer_id,
+                    'identification_type_id' => $identification['identification_type_id'],
+                    'identification_number' => $identification['identification_number'],
+                    'issuing_authority' => $identification['issuing_authority'],
+                    'expiry_date' => $identification['expiry_date'] ?? null,
+                ]);
+            }
+
+            DB::commit();
+
             return redirect()->route('customers.index')->with('success', 'Customer added successfully.');
         } catch (\Exception $e) {
+            DB::rollBack();
+
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -64,6 +83,8 @@ class CustomerController extends Controller
     public function show(Customer $customer): View|RedirectResponse
     {
         try {
+            $customer->load(['identifications.identificationType']);
+
             return view('customers.show', compact('customer'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -76,7 +97,10 @@ class CustomerController extends Controller
     public function edit(Customer $customer): View|RedirectResponse
     {
         try {
-            return view('customers.edit', compact('customer'));
+            $customer->load(['identifications']);
+            $identificationTypes = IdentificationTypeEnum::all();
+
+            return view('customers.edit', compact('customer', 'identificationTypes'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -88,6 +112,7 @@ class CustomerController extends Controller
     public function update(CustomerRequest $request, Customer $customer): RedirectResponse
     {
         try {
+            DB::beginTransaction();
             $customer->update([
                 'name' => $request->name,
                 'date_of_birth' => $request->date_of_birth,
@@ -98,8 +123,23 @@ class CustomerController extends Controller
                 'employment_details' => $request->employment_details ? array_values($request->employment_details) : null,
             ]);
 
+            $customer->identifications()->delete();
+
+            foreach ($request->identifications as $identification) {
+                CustomerIdentification::create([
+                    'customer_id' => $customer->customer_id,
+                    'identification_type_id' => $identification['identification_type_id'],
+                    'identification_number' => $identification['identification_number'],
+                    'issuing_authority' => $identification['issuing_authority'],
+                    'expiry_date' => $identification['expiry_date'] ?? null,
+                ]);
+            }
+            DB::commit();
+
             return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
         } catch (\Exception $e) {
+            DB::rollBack();
+
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
