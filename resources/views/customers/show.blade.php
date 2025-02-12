@@ -43,8 +43,17 @@
                     @endforeach
                 </td>
             </tr>
+            <tr>
+                <th>Identification Details</th>
+                <td>
+                    @foreach($customer->identifications as $identification)
+                        <strong>{{ $identification->identificationType->identification_type_value }}</strong> - {{ $identification['identification_number'] . ' issued by ' . $identification['issuing_authority'] }} {{ $identification['expiry_date'] ? ' expires on ' . $identification['expiry_date'] : '' }}
+                        <br>
+                    @endforeach
+                </td>
+            </tr>
         </table>
 
-        <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning">Edit</a>
+        <a href="{{ route('customers.edit', $customer->customer_id) }}" class="btn btn-warning">Edit</a>
     </div>
 @endsection

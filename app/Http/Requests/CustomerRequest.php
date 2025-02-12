@@ -27,6 +27,10 @@ class CustomerRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:255'],
             'credit_score' => ['nullable', 'numeric', 'between:0, 10'],
             'employment_details' => ['required', 'array'],
+            'identifications.*.identification_type_id' => ['required', 'exists:identification_type_enums,identification_type_id'],
+            'identifications.*.identification_number' => ['required', 'string'],
+            'identifications.*.issuing_authority' => ['required', 'string'],
+            'identifications.*.expiry_date' => ['nullable', 'date'],
         ];
     }
 }
