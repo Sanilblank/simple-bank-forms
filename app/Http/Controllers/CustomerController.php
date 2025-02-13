@@ -73,7 +73,7 @@ class CustomerController extends Controller
 
             DB::commit();
 
-            return redirect()->route('customers.index')->with('success', 'Customer added successfully.');
+            return redirect()->route('customers.show', $customer->customer_id)->with('success', 'Customer added successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             logger()->error($e);
@@ -88,7 +88,7 @@ class CustomerController extends Controller
     public function show(Customer $customer): View|RedirectResponse
     {
         try {
-            $customer->load(['identifications.identificationType']);
+            $customer->load(['identifications.identificationType', 'accounts.category', 'accounts.branch']);
 
             return view('customers.show', compact('customer'));
         } catch (\Exception $e) {
@@ -145,7 +145,7 @@ class CustomerController extends Controller
             }
             DB::commit();
 
-            return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
+            return redirect()->route('customers.show', $customer->customer_id)->with('success', 'Customer updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             logger()->error($e);
