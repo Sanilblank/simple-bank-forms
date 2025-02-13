@@ -22,6 +22,8 @@ class CustomerController extends Controller
 
             return view('customers.index', compact('customers'));
         } catch (\Exception $e) {
+            logger()->error($e);
+
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -36,6 +38,8 @@ class CustomerController extends Controller
 
             return view('customers.create', compact('identificationTypes'));
         } catch (\Exception $e) {
+            logger()->error($e);
+
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -72,6 +76,7 @@ class CustomerController extends Controller
             return redirect()->route('customers.index')->with('success', 'Customer added successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+            logger()->error($e);
 
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -87,6 +92,8 @@ class CustomerController extends Controller
 
             return view('customers.show', compact('customer'));
         } catch (\Exception $e) {
+            logger()->error($e);
+
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -102,6 +109,8 @@ class CustomerController extends Controller
 
             return view('customers.edit', compact('customer', 'identificationTypes'));
         } catch (\Exception $e) {
+            logger()->error($e);
+
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -139,6 +148,7 @@ class CustomerController extends Controller
             return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+            logger()->error($e);
 
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -154,6 +164,8 @@ class CustomerController extends Controller
 
             return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
         } catch (\Exception $e) {
+            logger()->error($e);
+
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
