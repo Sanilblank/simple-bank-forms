@@ -31,4 +31,9 @@ class Customer extends Model
     {
         return $this->hasMany(CustomerIdentification::class, 'customer_id', 'customer_id');
     }
+
+    public function accounts(): HasMany
+    {
+        return $this->hasMany(Account::class, 'customer_id', 'customer_id');
+    }
 }

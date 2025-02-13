@@ -4,11 +4,25 @@
     <div class="container">
         @include('layouts.response')
         <h2>Branch Details</h2>
-        <p><strong>Name:</strong> {{ $branch->name }}</p>
-        <p><strong>Location:</strong> {{ $branch->location }}</p>
-        <p><strong>Contact Number:</strong> {{ $branch->contact_number }}</p>
+        <a href="{{ route('branches.index') }}" class="btn btn-primary mb-3">Back to List</a>
 
-        <h3>Employees in this Branch</h3>
+        <table class="table table-bordered">
+            <tr>
+                <th>Name</th>
+                <td>{{ $branch->name }}</td>
+            </tr>
+            <tr>
+                <th>Location</th>
+                <td>{{ $branch->location }}</td>
+            </tr>
+            <tr>
+                <th>Contact Number</th>
+                <td>{{ $branch->contact_number }}</td>
+            </tr>
+        </table>
+        <a href="{{ route('branches.edit', $branch->branch_id) }}" class="btn btn-warning">Edit</a>
+
+        <h3 class="mt-5">Employees in this Branch</h3>
         <a href="{{ route('branches.employees.create', $branch->branch_id) }}" class="btn btn-success mb-3">Add Employee</a>
 
         @if (count($branch->employees))
