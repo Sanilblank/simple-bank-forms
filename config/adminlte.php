@@ -314,7 +314,11 @@ return [
             'text' => 'Customers',
             'url' => 'customers',
             'icon' => 'fas fa fa-users',
-            'label_color' => 'success',
+        ],
+        [
+            'text' => 'Branches',
+            'url' => 'branches',
+            'icon' => 'fas fa fa-adjust',
         ],
         ['header' => 'account_settings'],
         [

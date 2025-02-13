@@ -27,7 +27,7 @@
                         <a href="{{ route('customers.show', $customer->customer_id) }}" class="btn btn-info">View</a>
                         <a href="{{ route('customers.edit', $customer->customer_id) }}" class="btn btn-warning">Edit</a>
 
-                        <form action="{{ route('customers.destroy', $customer->customer_id) }}" method="POST" class="d-inline" onsubmit="return confirmDelete(event)">
+                        <form action="{{ route('customers.destroy', $customer->customer_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Delete</button>
@@ -38,14 +38,4 @@
             </tbody>
         </table>
     </div>
-
-    <script>
-        function confirmDelete(event) {
-            event.preventDefault();
-
-            if (confirm("Are you sure you want to delete this customer?")) {
-                event.target.submit();
-            }
-        }
-    </script>
 @endsection
