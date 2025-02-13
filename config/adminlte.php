@@ -311,14 +311,14 @@ return [
             'text' => 'search',
         ],
         [
-            'text' => 'Customers',
-            'url' => 'customers',
-            'icon' => 'fas fa fa-users',
-        ],
-        [
             'text' => 'Branches',
             'url' => 'branches',
             'icon' => 'fas fa fa-adjust',
+        ],
+        [
+            'text' => 'Customers',
+            'url' => 'customers',
+            'icon' => 'fas fa fa-users',
         ],
         ['header' => 'account_settings'],
         [
