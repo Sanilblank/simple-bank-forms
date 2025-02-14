@@ -335,6 +335,11 @@ return [
             'url' => 'loans',
             'icon' => 'fas fa fa-credit-card',
         ],
+        [
+            'text' => 'Fixed Deposits',
+            'url' => 'fixed-deposits',
+            'icon' => 'fas fa fa-credit-card',
+        ],
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
