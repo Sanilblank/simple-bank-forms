@@ -4,7 +4,7 @@
     <div class="container">
         @include('layouts.response')
         <h2>Account Details</h2>
-        <a href="{{ route('customers.show', $customer->customer_id) }}" class="btn btn-primary mb-3">Back to List</a>
+        <a href="{{ route('customers.show', $customer->customer_id) }}" class="btn btn-primary mb-3">Customer Details</a>
 
         <table class="table table-bordered">
             <tr>

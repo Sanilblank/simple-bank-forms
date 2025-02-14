@@ -36,4 +36,9 @@ class Customer extends Model
     {
         return $this->hasMany(Account::class, 'customer_id', 'customer_id');
     }
+
+    public function loans(): HasMany
+    {
+        return $this->hasMany(Loan::class, 'customer_id', 'customer_id');
+    }
 }

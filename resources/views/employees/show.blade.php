@@ -4,7 +4,7 @@
     <div class="container">
         @include('layouts.response')
         <h2>Employee Details</h2>
-        <a href="{{ route('branches.show', $branch->branch_id) }}" class="btn btn-primary mb-3">Back</a>
+        <a href="{{ route('branches.show', $branch->branch_id) }}" class="btn btn-primary mb-3">Employee Branch Detail</a>
 
         <table class="table table-bordered">
             <tr>
