@@ -67,7 +67,7 @@ class AccountController extends Controller
     public function show(Customer $customer, Account $account): View|RedirectResponse
     {
         try {
-            $account->load(['branch', 'category']);
+            $account->load(['branch', 'category', 'transactions.transactionType', 'transactions.transactionMode']);
 
             return view('accounts.show', compact('account', 'customer', 'account'));
         } catch (\Exception $e) {
