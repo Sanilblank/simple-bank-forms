@@ -7,6 +7,7 @@ use App\Models\Transaction;
 use App\Models\TransactionModeEnum;
 use App\Models\TransactionTypeEnum;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CreateTransaction extends Command
@@ -31,6 +32,7 @@ class CreateTransaction extends Command
     public function handle()
     {
         try {
+            DB::beginTransaction();
             $account_id = $this->askValid(
                 'Enter account number:',
                 'account_id',
@@ -71,8 +73,20 @@ class CreateTransaction extends Command
                     }
                 }]);
 
-            $amount = $this->askValid('Enter amount:', 'amount', ['required', 'numeric']);
-            $date = $this->askValid('Enter date:', 'date', ['required', 'date']);
+            $amount = $this->askValid('Enter amount:', 'amount', ['required', 'numeric', function ($attribute, $value, $fail) use ($transaction_type_id, $account_id) {
+                if ($value < 0) {
+                    $fail('The amount must be greater than 0');
+                }
+
+                if (
+                    (int) $transaction_type_id !== TransactionTypeEnum::where('transaction_type_value', 'Deposit')->first()->transaction_type_id &&
+                    $value > Account::where('account_id', $account_id)->first()->balance
+                ) {
+                    $fail('The amount must be less than or equal to the account balance');
+                }
+            }]);
+
+            $date = $this->askValid('Enter date:', 'date', ['required', 'date', 'before_or_equal:today']);
 
             Transaction::create([
                 'account_id' => $account_id,
@@ -82,8 +96,22 @@ class CreateTransaction extends Command
                 'date' => $date,
             ]);
 
+            $account = Account::where('account_id', $account_id)->first();
+
+            if ((int) $transaction_type_id !== TransactionTypeEnum::where('transaction_type_value', 'Deposit')->first()->transaction_type_id) {
+                $account->update([
+                    'balance' => (float) $account->balance - (float) $amount,
+                ]);
+            } else {
+                $account->update([
+                    'balance' => (float) $account->balance + (float) $amount,
+                ]);
+            }
+
+            DB::commit();
             $this->info('Transaction created successfully');
         } catch (\Exception $e) {
+            DB::rollBack();
             logger()->error($e);
 
             $this->error($e->getMessage());
