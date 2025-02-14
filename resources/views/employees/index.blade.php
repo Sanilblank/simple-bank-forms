@@ -3,29 +3,10 @@
 @section('content')
     <div class="container">
         @include('layouts.response')
-        <h2>Branch Details</h2>
-        <a href="{{ route('branches.index') }}" class="btn btn-primary mb-3">Branches List</a>
 
-        <table class="table table-bordered">
-            <tr>
-                <th>Name</th>
-                <td>{{ $branch->name }}</td>
-            </tr>
-            <tr>
-                <th>Location</th>
-                <td>{{ $branch->location }}</td>
-            </tr>
-            <tr>
-                <th>Contact Number</th>
-                <td>{{ $branch->contact_number }}</td>
-            </tr>
-        </table>
-        <a href="{{ route('branches.edit', $branch->branch_id) }}" class="btn btn-warning">Edit</a>
+        <h3>Employees List</h3>
 
-        <h3 class="mt-5">Employees in this Branch</h3>
-        <a href="{{ route('branches.employees.create', $branch->branch_id) }}" class="btn btn-success mb-3">Add Employee</a>
-
-        @if (count($branch->employees))
+        @if (count($employees))
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -37,17 +18,18 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($branch->employees as $employee)
+                @foreach ($employees as $employee)
                     <tr>
                         <td>{{ $employee->name }}</td>
+                        <td><a href="{{ route('branches.show', $employee->branch_id) }}" target="_blank">{{ $employee->branch->name }}</a></td>
                         <td>{{ $employee->role }}</td>
                         <td>{{ $employee->contact_number }}</td>
                         <td>{{ $employee->is_branch_manager ? 'Yes' : 'No' }}</td>
                         <td>
-                            <a href="{{ route('branches.employees.show', [$branch->branch_id, $employee->employee_id]) }}" class="btn btn-info btn-sm">View</a>
-                            <a href="{{ route('branches.employees.edit', [$branch->branch_id, $employee->employee_id]) }}"
+                            <a href="{{ route('branches.employees.show', [$employee->branch_id, $employee->employee_id]) }}" class="btn btn-info btn-sm">View</a>
+                            <a href="{{ route('branches.employees.edit', [$employee->branch_id, $employee->employee_id]) }}"
                                class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('branches.employees.destroy', [$branch->branch_id, $employee->employee_id]) }}" method="POST"
+                            <form action="{{ route('branches.employees.destroy', [$employee->branch_id, $employee->employee_id]) }}" method="POST"
                                   style="display:inline;">
                                 @csrf
                                 @method('DELETE')
@@ -61,7 +43,7 @@
                 </tbody>
             </table>
         @else
-            <p>No employees in this branch.</p>
+            <p>No employees found.</p>
         @endif
     </div>
 @endsection

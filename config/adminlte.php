@@ -316,9 +316,24 @@ return [
             'icon' => 'fas fa fa-adjust',
         ],
         [
+            'text' => 'Employees',
+            'url' => 'employees',
+            'icon' => 'fas fa fa-building',
+        ],
+        [
             'text' => 'Customers',
             'url' => 'customers',
             'icon' => 'fas fa fa-users',
+        ],
+        [
+            'text' => 'Accounts',
+            'url' => 'accounts',
+            'icon' => 'fas fa fa-book',
+        ],
+        [
+            'text' => 'Loans',
+            'url' => 'loans',
+            'icon' => 'fas fa fa-credit-card',
         ],
         ['header' => 'account_settings'],
         [

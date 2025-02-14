@@ -16,6 +16,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             IdentificationTypeEnumSeeder::class,
+            AccountCategorySeeder::class,
+            TransactionModeEnumSeeder::class,
+            TransactionTypeEnumSeeder::class,
+            LoanTypeEnumSeeder::class,
         ]);
     }
 }

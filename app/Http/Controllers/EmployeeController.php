@@ -14,9 +14,17 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|RedirectResponse
     {
-        //
+        try {
+            $employees = Employee::orderBy('updated_at', 'desc')->with(['branch'])->get();
+
+            return view('employees.index', compact('employees'));
+        } catch (\Exception $e) {
+            logger()->error($e);
+
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**

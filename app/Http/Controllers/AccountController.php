@@ -16,9 +16,17 @@ class AccountController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|RedirectResponse
     {
-        //
+        try {
+            $accounts = Account::orderBy('updated_at', 'desc')->with(['customer', 'category', 'branch'])->get();
+
+            return view('accounts.index', compact('accounts'));
+        } catch (\Exception $e) {
+            logger()->error($e);
+
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
