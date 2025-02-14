@@ -62,4 +62,9 @@ class Customer extends Model
     {
         return $this->hasOne(MobileBanking::class, 'customer_id', 'customer_id');
     }
+
+    public function registeredServices(): HasMany
+    {
+        return $this->hasMany(RegisteredService::class, 'customer_id', 'customer_id');
+    }
 }

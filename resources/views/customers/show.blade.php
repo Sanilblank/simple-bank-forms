@@ -1,3 +1,4 @@
+@php use App\Models\ServiceEnum; @endphp
 @extends('adminlte::page')
 
 @section('content')
@@ -52,6 +53,19 @@
                         - {{ $identification['identification_number'] . ' issued by ' . $identification['issuing_authority'] }} {{ $identification['expiry_date'] ? ' expires on ' . $identification['expiry_date'] : '' }}
                         <br>
                     @endforeach
+                </td>
+            </tr>
+            <tr>
+                <th>Registered Services</th>
+                <td>
+                    @if (count($customer->registeredServices))
+                        @foreach($customer->registeredServices as $service)
+                            <strong>{{ $service->service->service_name }}</strong>
+                            <br>
+                        @endforeach
+                    @else
+                        N/A
+                    @endif
                 </td>
             </tr>
         </table>
@@ -190,46 +204,150 @@
             <p>No fixed deposits found.</p>
         @endif
 
-        <h2 class="mt-5">Cheques Issued</h2>
-        <a href="{{ route('customers.cheques.create', $customer->customer_id) }}" class="btn btn-success mb-3">Add
-            Cheque</a>
+        <h2 class="mt-5">ATM Cards Issued</h2>
+        @if (count($customer->registeredServices) && $customer->registeredServices()->where('service_id', ServiceEnum::where('service_name', 'ATM Card')->first()->service_id)->exists())
+            <a href="{{ route('customers.atm-cards.create', $customer->customer_id) }}" class="btn btn-success mb-3">Add
+                ATM
+                Card</a>
 
-        @if (count($customer->cheques))
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>Cheque ID</th>
-                    <th>Account ID</th>
-                    <th>Date Issued</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($customer->cheques as $cheque)
+            @if (count($customer->atmCards))
+                <table class="table table-bordered">
+                    <thead>
                     <tr>
-                        <td>{{ $cheque->cheque_id }}</td>
-                        <td><a href="{{route('customers.accounts.show', [$cheque->customer_id, $cheque->account_id])}}"
-                               target="_blank">{{ $cheque->account_id }}</a></td>
-                        <td>{{ $cheque->date_issued }}</td>
+                        <th>Card ID</th>
+                        <th>Account ID</th>
+                        <th>Card Number</th>
+                        <th>Expiry Date</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($customer->atmCards as $atmCard)
+                        <tr>
+                            <td>{{ $atmCard->card_id }}</td>
+                            <td>
+                                <a href="{{route('customers.accounts.show', [$atmCard->customer_id, $atmCard->account_id])}}"
+                                   target="_blank">{{ $atmCard->account_id }}</a></td>
+                            <td>{{ $atmCard->card_number }}</td>
+                            <td>{{ $atmCard->expiry_date }}</td>
+                            <td>
+                                <a href="{{ route('customers.atm-cards.edit', [$atmCard->customer_id, $atmCard->card_id]) }}"
+                                   class="btn btn-warning btn-sm">Edit</a>
+                                <form
+                                    action="{{ route('customers.atm-cards.destroy', [$atmCard->customer_id, $atmCard->card_id]) }}"
+                                    method="POST"
+                                    style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Are you sure?')">Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p>No ATM cards found.</p>
+            @endif
+        @else
+            <p>No ATM card service found.</p>
+        @endif
+
+        <h2 class="mt-5">Cheques Issued</h2>
+        @if (count($customer->registeredServices) && $customer->registeredServices()->where('service_id', ServiceEnum::where('service_name', 'Cheque')->first()->service_id)->exists())
+            <a href="{{ route('customers.cheques.create', $customer->customer_id) }}" class="btn btn-success mb-3">Add
+                Cheque</a>
+
+            @if (count($customer->cheques))
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Cheque ID</th>
+                        <th>Account ID</th>
+                        <th>Date Issued</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($customer->cheques as $cheque)
+                        <tr>
+                            <td>{{ $cheque->cheque_id }}</td>
+                            <td>
+                                <a href="{{route('customers.accounts.show', [$cheque->customer_id, $cheque->account_id])}}"
+                                   target="_blank">{{ $cheque->account_id }}</a></td>
+                            <td>{{ $cheque->date_issued }}</td>
+                            <td>
+                                @switch($cheque->status)
+                                    @case('Active')
+                                        <span class="badge badge-success">Active</span>
+                                        @break
+                                    @case('Finished')
+                                        <span class="badge badge-warning">Finished</span>
+                                        @break
+                                    @case('Cancelled')
+                                        <span class="badge badge-danger">Cancelled</span>
+                                        @break
+                                @endswitch
+                            </td>
+                            <td>
+                                <a href="{{ route('customers.cheques.edit', [$cheque->customer_id, $cheque->cheque_id]) }}"
+                                   class="btn btn-warning btn-sm">Edit</a>
+                                <form
+                                    action="{{ route('customers.cheques.destroy', [$cheque->customer_id, $cheque->cheque_id]) }}"
+                                    method="POST"
+                                    style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Are you sure?')">Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p>No cheques found.</p>
+            @endif
+        @else
+            <p>No cheque service found.</p>
+        @endif
+
+        <h2 class="mt-5">Mobile Banking</h2>
+        @if (count($customer->registeredServices) && $customer->registeredServices()->where('service_id', ServiceEnum::where('service_name', 'Mobile Banking')->first()->service_id)->exists())
+            @if ($customer->mobileBanking)
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Mobile Banking ID</th>
+                        <th>Registered Number</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{{ $customer->mobileBanking->mobile_banking_id }}</td>
+                        <td>{{ $customer->mobileBanking->registered_number }}</td>
                         <td>
-                            @switch($cheque->status)
+                            @switch($customer->mobileBanking->status)
                                 @case('Active')
                                     <span class="badge badge-success">Active</span>
                                     @break
-                                @case('Finished')
-                                    <span class="badge badge-warning">Finished</span>
-                                    @break
-                                @case('Cancelled')
-                                    <span class="badge badge-danger">Cancelled</span>
+                                @case('Inactive')
+                                    <span class="badge badge-danger">Inactive</span>
                                     @break
                             @endswitch
                         </td>
                         <td>
-                            <a href="{{ route('customers.cheques.edit', [$cheque->customer_id, $cheque->cheque_id]) }}"
+                            <a href="{{ route('customers.mobile-banking.edit', [$customer->mobileBanking->customer_id, $customer->mobileBanking->mobile_banking_id]) }}"
                                class="btn btn-warning btn-sm">Edit</a>
                             <form
-                                action="{{ route('customers.cheques.destroy', [$cheque->customer_id, $cheque->cheque_id]) }}"
+                                action="{{ route('customers.mobile-banking.destroy', [$customer->mobileBanking->customer_id, $customer->mobileBanking->mobile_banking_id]) }}"
                                 method="POST"
                                 style="display:inline;">
                                 @csrf
@@ -240,106 +358,15 @@
                             </form>
                         </td>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            @else
+                <a href="{{ route('customers.mobile-banking.create', $customer->customer_id) }}"
+                   class="btn btn-success mb-3">Add Mobile Banking</a>
+                <p>No mobile banking found.</p>
+            @endif
         @else
-            <p>No cheques found.</p>
-        @endif
-
-        <h2 class="mt-5">ATM Cards Issued</h2>
-        <a href="{{ route('customers.atm-cards.create', $customer->customer_id) }}" class="btn btn-success mb-3">Add ATM
-            Card</a>
-
-        @if (count($customer->atmCards))
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>Card ID</th>
-                    <th>Account ID</th>
-                    <th>Card Number</th>
-                    <th>Expiry Date</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($customer->atmCards as $atmCard)
-                    <tr>
-                        <td>{{ $atmCard->card_id }}</td>
-                        <td>
-                            <a href="{{route('customers.accounts.show', [$atmCard->customer_id, $atmCard->account_id])}}"
-                               target="_blank">{{ $atmCard->account_id }}</a></td>
-                        <td>{{ $atmCard->card_number }}</td>
-                        <td>{{ $atmCard->expiry_date }}</td>
-                        <td>
-                            <a href="{{ route('customers.atm-cards.edit', [$atmCard->customer_id, $atmCard->card_id]) }}"
-                               class="btn btn-warning btn-sm">Edit</a>
-                            <form
-                                action="{{ route('customers.atm-cards.destroy', [$atmCard->customer_id, $atmCard->card_id]) }}"
-                                method="POST"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Are you sure?')">Delete
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        @else
-            <p>No ATM cards found.</p>
-        @endif
-
-        <h2 class="mt-5">Mobile Banking</h2>
-
-        @if ($customer->mobileBanking)
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>Mobile Banking ID</th>
-                    <th>Registered Number</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>{{ $customer->mobileBanking->mobile_banking_id }}</td>
-                    <td>{{ $customer->mobileBanking->registered_number }}</td>
-                    <td>
-                        @switch($customer->mobileBanking->status)
-                            @case('Active')
-                                <span class="badge badge-success">Active</span>
-                                @break
-                            @case('Inactive')
-                                <span class="badge badge-danger">Inactive</span>
-                                @break
-                        @endswitch
-                    </td>
-                    <td>
-                        <a href="{{ route('customers.mobile-banking.edit', [$customer->mobileBanking->customer_id, $customer->mobileBanking->mobile_banking_id]) }}"
-                           class="btn btn-warning btn-sm">Edit</a>
-                        <form
-                            action="{{ route('customers.mobile-banking.destroy', [$customer->mobileBanking->customer_id, $customer->mobileBanking->mobile_banking_id]) }}"
-                            method="POST"
-                            style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure?')">Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        @else
-            <a href="{{ route('customers.mobile-banking.create', $customer->customer_id) }}"
-               class="btn btn-success mb-3">Add Mobile Banking</a>
-            <p>No mobile banking found.</p>
+            <p>No mobile banking service found.</p>
         @endif
     </div>
 @endsection

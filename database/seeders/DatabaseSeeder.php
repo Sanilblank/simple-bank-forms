@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             TransactionModeEnumSeeder::class,
             TransactionTypeEnumSeeder::class,
             LoanTypeEnumSeeder::class,
+            ServiceEnumSeeder::class,
         ]);
     }
 }

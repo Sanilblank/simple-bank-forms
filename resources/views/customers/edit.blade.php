@@ -41,6 +41,14 @@
             </div>
 
             <div class="form-group">
+                <label>Registered Services</label><br>
+
+                @foreach ($serviceTypes as $type)
+                    <label><input type="checkbox" name="registered_services[{{ $type->service_id }}]" value="1" {{ count($customer->registeredServices) && $customer->registeredServices()->where('service_id', $type->service_id)->exists() ? 'checked' : '' }}> {{ $type->service_name }}</label>
+                @endforeach
+            </div>
+
+            <div class="form-group">
                 <label>Employment Details</label>
                 <div id="employment-section">
                     @foreach($customer->employment_details as $index => $job)
