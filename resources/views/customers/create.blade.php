@@ -30,6 +30,13 @@
                 <label>Credit Score</label>
                 <input type="number" name="credit_score" class="form-control" value="{{ old('credit_score') }}">
             </div>
+            <div class="form-group">
+                <label>Registered Services</label><br>
+
+                @foreach ($serviceTypes as $type)
+                    <label><input type="checkbox" name="registered_services[{{ $type->service_id }}]" value="1"> {{ $type->service_name }}</label>
+                @endforeach
+            </div>
 
             <div class="form-group">
                 <label>Employment Details</label>

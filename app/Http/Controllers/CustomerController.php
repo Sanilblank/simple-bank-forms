@@ -6,6 +6,7 @@ use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
 use App\Models\CustomerIdentification;
 use App\Models\IdentificationTypeEnum;
+use App\Models\ServiceEnum;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -35,8 +36,9 @@ class CustomerController extends Controller
     {
         try {
             $identificationTypes = IdentificationTypeEnum::all();
+            $serviceTypes = ServiceEnum::all();
 
-            return view('customers.create', compact('identificationTypes'));
+            return view('customers.create', compact('identificationTypes', 'serviceTypes'));
         } catch (\Exception $e) {
             logger()->error($e);
 
@@ -71,6 +73,16 @@ class CustomerController extends Controller
                 ]);
             }
 
+            if ($request->registered_services && count($request->registered_services)) {
+                foreach ($request->registered_services as $serviceKey => $service) {
+                    if ($service === '1') {
+                        $customer->registeredServices()->create([
+                            'service_id' => $serviceKey,
+                        ]);
+                    }
+                }
+            }
+
             DB::commit();
 
             return redirect()->route('customers.show', $customer->customer_id)->with('success', 'Customer added successfully.');
@@ -88,7 +100,17 @@ class CustomerController extends Controller
     public function show(Customer $customer): View|RedirectResponse
     {
         try {
-            $customer->load(['identifications.identificationType', 'accounts.category', 'accounts.branch', 'loans.loanType']);
+            $customer->load([
+                'identifications.identificationType',
+                'accounts.category',
+                'accounts.branch',
+                'loans.loanType',
+                'fixedDeposits',
+                'cheques',
+                'atmCards',
+                'mobileBanking',
+                'registeredServices.service',
+            ]);
 
             return view('customers.show', compact('customer'));
         } catch (\Exception $e) {
@@ -104,10 +126,11 @@ class CustomerController extends Controller
     public function edit(Customer $customer): View|RedirectResponse
     {
         try {
-            $customer->load(['identifications']);
+            $customer->load(['identifications', 'registeredServices']);
             $identificationTypes = IdentificationTypeEnum::all();
+            $serviceTypes = ServiceEnum::all();
 
-            return view('customers.edit', compact('customer', 'identificationTypes'));
+            return view('customers.edit', compact('customer', 'identificationTypes', 'serviceTypes'));
         } catch (\Exception $e) {
             logger()->error($e);
 
@@ -143,6 +166,21 @@ class CustomerController extends Controller
                     'expiry_date' => $identification['expiry_date'] ?? null,
                 ]);
             }
+
+            if (count($customer->registeredServices)) {
+                $customer->registeredServices()->delete();
+            }
+
+            if ($request->registered_services && count($request->registered_services)) {
+                foreach ($request->registered_services as $serviceKey => $service) {
+                    if ($service === '1') {
+                        $customer->registeredServices()->create([
+                            'service_id' => $serviceKey,
+                        ]);
+                    }
+                }
+            }
+
             DB::commit();
 
             return redirect()->route('customers.show', $customer->customer_id)->with('success', 'Customer updated successfully.');

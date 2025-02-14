@@ -23,7 +23,7 @@
                     <tr>
                         <td>{{ $fixedDeposit->fixed_deposit_id }}</td>
                         <td><a href="{{route('customers.show', $fixedDeposit->customer_id)}}" target="_blank">{{ $fixedDeposit->customer->name }}</a></td>
-                        <td><a href="{{route('customers.accounts.show', [$fixedDeposit->customer_id, $fixedDeposit->account_id])}}" target="_blank">{{ $fixedDeposit->account->account_id }}</a></td>
+                        <td><a href="{{route('customers.accounts.show', [$fixedDeposit->customer_id, $fixedDeposit->account_id])}}" target="_blank">{{ $fixedDeposit->account_id }}</a></td>
                         <td>{{ $fixedDeposit->deposit_amount }}</td>
                         <td>{{ $fixedDeposit->interest_rate }}</td>
                         <td>{{ $fixedDeposit->created_at->format('Y-m-d') }}</td>
