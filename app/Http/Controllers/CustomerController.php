@@ -88,7 +88,16 @@ class CustomerController extends Controller
     public function show(Customer $customer): View|RedirectResponse
     {
         try {
-            $customer->load(['identifications.identificationType', 'accounts.category', 'accounts.branch', 'loans.loanType']);
+            $customer->load([
+                'identifications.identificationType',
+                'accounts.category',
+                'accounts.branch',
+                'loans.loanType',
+                'fixedDeposits',
+                'cheques',
+                'atmCards',
+                'mobileBanking',
+            ]);
 
             return view('customers.show', compact('customer'));
         } catch (\Exception $e) {
