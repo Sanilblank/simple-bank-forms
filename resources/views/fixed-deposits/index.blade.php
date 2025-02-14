@@ -1,0 +1,39 @@
+@extends('adminlte::page')
+
+@section('content')
+    <div class="container">
+        @include('layouts.response')
+        <h2>Fixed Deposits</h2>
+
+        @if (count($fixedDeposits))
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Fixed Deposit ID</th>
+                    <th>Customer Name</th>
+                    <th>Account ID</th>
+                    <th>Deposit Amount(Rs.)</th>
+                    <th>Interest Rate(%)</th>
+                    <th>Created At</th>
+                    <th>Maturity Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($fixedDeposits as $fixedDeposit)
+                    <tr>
+                        <td>{{ $fixedDeposit->fixed_deposit_id }}</td>
+                        <td><a href="{{route('customers.show', $fixedDeposit->customer_id)}}" target="_blank">{{ $fixedDeposit->customer->name }}</a></td>
+                        <td><a href="{{route('customers.accounts.show', [$fixedDeposit->customer_id, $fixedDeposit->account_id])}}" target="_blank">{{ $fixedDeposit->account->account_id }}</a></td>
+                        <td>{{ $fixedDeposit->deposit_amount }}</td>
+                        <td>{{ $fixedDeposit->interest_rate }}</td>
+                        <td>{{ $fixedDeposit->created_at->format('Y-m-d') }}</td>
+                        <td>{{ $fixedDeposit->maturity_date }}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        @else
+            <p>No fixed deposits found.</p>
+        @endif
+    </div>
+@endsection

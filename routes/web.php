@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\FixedDepositController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoanController;
 use Illuminate\Support\Facades\Route;
@@ -25,4 +26,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
     Route::resource('loans', LoanController::class)->only(['index', 'show']);
     Route::get('/loans/{loan}/update-status/{status}', [LoanController::class, 'updateStatus'])->name('loans.update-status');
+    Route::get('/fixed-deposits', [FixedDepositController::class, 'index'])->name('fixed-deposits.index');
 });
