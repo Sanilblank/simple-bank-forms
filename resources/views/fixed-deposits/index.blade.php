@@ -1,12 +1,15 @@
 @extends('adminlte::page')
 
+@section('css')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+@endsection
 @section('content')
     <div class="container">
         @include('layouts.response')
         <h2>Fixed Deposits</h2>
 
         @if (count($fixedDeposits))
-            <table class="table table-bordered">
+            <table class="table table-bordered datatable">
                 <thead>
                 <tr>
                     <th>Fixed Deposit ID</th>
@@ -36,4 +39,8 @@
             <p>No fixed deposits found.</p>
         @endif
     </div>
+@endsection
+@section('js')
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="{{ asset('js/datatables.js') }}"></script>
 @endsection

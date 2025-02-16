@@ -1,6 +1,9 @@
 @php use App\Models\ServiceEnum; @endphp
 @extends('adminlte::page')
 
+@section('css')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+@endsection
 @section('content')
     <div class="container">
         @include('layouts.response')
@@ -76,7 +79,7 @@
             Account</a>
 
         @if (count($customer->accounts))
-            <table class="table table-bordered">
+            <table class="table table-bordered datatable">
                 <thead>
                 <tr>
                     <th>Account ID</th>
@@ -122,7 +125,7 @@
         <h3 class="mt-5">Loan Applications</h3>
 
         @if (count($customer->loans))
-            <table class="table table-bordered">
+            <table class="table table-bordered datatable">
                 <thead>
                 <tr>
                     <th>Loan ID</th>
@@ -174,7 +177,7 @@
         <h2 class="mt-5">Fixed Deposits</h2>
 
         @if (count($customer->fixedDeposits))
-            <table class="table table-bordered">
+            <table class="table table-bordered datatable">
                 <thead>
                 <tr>
                     <th>Fixed Deposit ID</th>
@@ -211,7 +214,7 @@
                 Card</a>
 
             @if (count($customer->atmCards))
-                <table class="table table-bordered">
+                <table class="table table-bordered datatable">
                     <thead>
                     <tr>
                         <th>Card ID</th>
@@ -261,7 +264,7 @@
                 Cheque</a>
 
             @if (count($customer->cheques))
-                <table class="table table-bordered">
+                <table class="table table-bordered datatable">
                     <thead>
                     <tr>
                         <th>Cheque ID</th>
@@ -320,7 +323,7 @@
         <h2 class="mt-5">Mobile Banking</h2>
         @if (count($customer->registeredServices) && $customer->registeredServices()->where('service_id', ServiceEnum::where('service_name', 'Mobile Banking')->first()->service_id)->exists())
             @if ($customer->mobileBanking)
-                <table class="table table-bordered">
+                <table class="table table-bordered datatable">
                     <thead>
                     <tr>
                         <th>Mobile Banking ID</th>
@@ -369,4 +372,8 @@
             <p>No mobile banking service found.</p>
         @endif
     </div>
+@endsection
+@section('js')
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="{{ asset('js/datatables.js') }}"></script>
 @endsection

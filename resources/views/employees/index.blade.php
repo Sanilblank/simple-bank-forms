@@ -1,5 +1,8 @@
 @extends('adminlte::page')
 
+@section('css')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+@endsection
 @section('content')
     <div class="container">
         @include('layouts.response')
@@ -7,10 +10,11 @@
         <h3>Employees List</h3>
 
         @if (count($employees))
-            <table class="table table-bordered">
+            <table class="table table-bordered datatable">
                 <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Branch Name</th>
                     <th>Role</th>
                     <th>Contact Number</th>
                     <th>Branch Manager</th>
@@ -46,4 +50,8 @@
             <p>No employees found.</p>
         @endif
     </div>
+@endsection
+@section('js')
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="{{ asset('js/datatables.js') }}"></script>
 @endsection
