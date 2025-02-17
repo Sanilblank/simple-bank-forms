@@ -311,6 +311,11 @@ return [
             'text' => 'search',
         ],
         [
+            'text' => 'Dashboard',
+            'url' => 'home',
+            'icon' => 'fas fa fa-adjust',
+        ],
+        [
             'text' => 'Branches',
             'url' => 'branches',
             'icon' => 'fas fa fa-adjust',

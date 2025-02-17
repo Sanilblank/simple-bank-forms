@@ -21,4 +21,9 @@ class Branch extends Model
     {
         return $this->hasMany(Employee::class, 'branch_id', 'branch_id');
     }
+
+    public function accounts(): HasMany
+    {
+        return $this->hasMany(Account::class, 'branch_id', 'branch_id');
+    }
 }
