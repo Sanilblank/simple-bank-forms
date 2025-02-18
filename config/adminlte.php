@@ -313,7 +313,7 @@ return [
         [
             'text' => 'Dashboard',
             'url' => 'home',
-            'icon' => 'fas fa fa-adjust',
+            'icon' => 'fas fa fa-bars',
         ],
         [
             'text' => 'Branches',
