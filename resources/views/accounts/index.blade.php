@@ -1,12 +1,15 @@
 @extends('adminlte::page')
 
+@section('css')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+@endsection
 @section('content')
     <div class="container">
         @include('layouts.response')
         <h2>Accounts List</h2>
 
         @if (count($accounts))
-            <table class="table table-bordered">
+            <table class="table table-bordered datatable">
                 <thead>
                 <tr>
                     <th>Account ID</th>
@@ -48,4 +51,8 @@
             <p>No accounts found.</p>
         @endif
     </div>
+@endsection
+@section('js')
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="{{ asset('js/datatables.js') }}"></script>
 @endsection
