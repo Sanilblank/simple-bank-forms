@@ -23,7 +23,7 @@ class MobileBankingRequest extends FormRequest
     {
         return [
             'registered_number' => ['required', 'numeric', 'digits:10'],
-            'status' => ['required', 'in:Active, Inactive'],
+            'status' => ['required', 'in:Active,Inactive'],
         ];
     }
 }

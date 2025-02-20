@@ -12,6 +12,10 @@
 
         <table class="table table-bordered">
             <tr>
+                <th>Customer ID</th>
+                <td>{{ $customer->customer_id }}</td>
+            </tr>
+            <tr>
                 <th>Name</th>
                 <td>{{ $customer->name }}</td>
             </tr>

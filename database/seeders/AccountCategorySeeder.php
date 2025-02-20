@@ -40,7 +40,7 @@ class AccountCategorySeeder extends Seeder
             ],
             [
                 'account_type_id' => $checking->account_type_id,
-                'account_category_value' => 'Noraml Checking Account',
+                'account_category_value' => 'Normal Checking Account',
                 'interest_rate' => 6.5,
                 'withdrawal_limit' => 15000,
                 'minimum_balance' => 1000,

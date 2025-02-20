@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('customer_id')->references('customer_id')->on('customers')->onDelete('cascade');
             $table->foreignId('branch_id')->references('branch_id')->on('branches')->onDelete('cascade');
             $table->foreignId('account_category_id')->references('account_category_id')->on('account_categories')->onDelete('cascade');
-            $table->decimal('balance');
+            $table->float('balance');
             $table->date('date_opened');
             $table->timestamps();
         });

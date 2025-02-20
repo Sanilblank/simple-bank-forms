@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('account_id')->references('account_id')->on('accounts')->onDelete('cascade');
             $table->foreignId('transaction_type_id')->references('transaction_type_id')->on('transaction_type_enums')->onDelete('cascade');
             $table->foreignId('transaction_mode_id')->references('transaction_mode_id')->on('transaction_mode_enums')->onDelete('cascade');
-            $table->decimal('amount');
+            $table->float('amount');
             $table->date('date');
             $table->timestamps();
         });
