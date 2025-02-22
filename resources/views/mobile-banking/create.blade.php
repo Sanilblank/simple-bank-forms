@@ -8,7 +8,7 @@
             @csrf
             <div class="mb-3">
                 <label class="form-label">Registered Number *</label>
-                <input type="number" name="registered_number" class="form-control" value="{{ @old('registered_number') }}"
+                <input type="number" name="registered_number" class="form-control" value="{{ @old('registered_number') ?: $customer->contact_number }}"
                        required>
             </div>
             <div class="mb-3">
