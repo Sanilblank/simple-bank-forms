@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\FixedDeposit;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class FixedDepositController extends Controller
 {
-    public function index()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return View|RedirectResponse
+     */
+    public function index(): View|RedirectResponse
     {
         try {
             $fixedDeposits = FixedDeposit::orderBy('updated_at', 'desc')->with(['customer', 'account'])->get();
