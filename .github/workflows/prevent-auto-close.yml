@@ -1,0 +1,43 @@
+name: Reopen Issue and Add "QA Ready" Label
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  reopen_issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Extract Issue Number from Branch Name
+        id: extract_issue
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          ISSUE_NUMBER=$(echo "$BRANCH_NAME" | grep -oE "[0-9]+" | head -n1)
+          echo "ISSUE_NUMBER=$ISSUE_NUMBER" >> $GITHUB_ENV
+
+      - name: Fetch Issue State
+        id: fetch_issue
+        if: env.ISSUE_NUMBER != ''
+        run: |
+          RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.PAT_GITHUB }}" \
+          "https://api.github.com/repos/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}")
+          STATE=$(echo "$RESPONSE" | jq -r '.state')
+          echo "STATE=$STATE" >> $GITHUB_ENV
+
+      - name: Reopen Issue if Closed
+        if: env.ISSUE_NUMBER != '' && env.STATE == 'closed'
+        run: |
+          curl -X PATCH -H "Authorization: token ${{ secrets.PAT_GITHUB }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}" \
+          -d '{"state": "open"}'
+
+      - name: Add "QA Ready" Label
+        if: env.ISSUE_NUMBER != ''
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.PAT_GITHUB }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}/labels" \
+          -d '{"labels": ["QA Ready"]}'
