@@ -8,13 +8,14 @@ on:
 jobs:
   reopen_issue:
     runs-on: ubuntu-latest
-
     steps:
       - name: Extract Issue Number from Branch Name
         id: extract_issue
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          echo "Branch name: $BRANCH_NAME"
           ISSUE_NUMBER=$(echo "$BRANCH_NAME" | grep -oE "[0-9]+" | head -n1)
+          echo "Extracted issue number: $ISSUE_NUMBER"
           echo "ISSUE_NUMBER=$ISSUE_NUMBER" >> $GITHUB_ENV
 
       - name: Fetch Issue State
@@ -23,7 +24,9 @@ jobs:
         run: |
           RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.PAT_GITHUB }}" \
           "https://api.github.com/repos/${{ github.repository }}/issues/${{ env.ISSUE_NUMBER }}")
+          echo "Issue Data: $RESPONSE"
           STATE=$(echo "$RESPONSE" | jq -r '.state')
+          echo "Issue State: $STATE"
           echo "STATE=$STATE" >> $GITHUB_ENV
 
       - name: Reopen Issue if Closed
